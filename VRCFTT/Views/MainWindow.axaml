@@ -1,0 +1,101 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:VRCFTT.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:converters="using:VRCFTT.Converters"
+		xmlns:selectors="using:VRCFTT.Selectors"
+		xmlns:datatypes="using:VRCFTT.Data"
+		xmlns:system="using:System"
+        mc:Ignorable="d"
+		d:DesignWidth="800"
+		d:DesignHeight="450"
+        x:Class="VRCFTT.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+		x:CompileBindings="True"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="VRCFTT">
+
+	<Window.Resources>
+		<converters:NullSingleConverter x:Key="NullSingleConverter" />
+		<converters:NullIntConverter x:Key="NullIntConverter" />
+
+		<selectors:AvatarParameterTypeSelector x:Key="ParameterTemplate">
+			<TreeDataTemplate x:Key="Float">
+				<TreeDataTemplate.DataType>
+					<x:Type TypeName="datatypes:ParsedAvatarConfigParameter" x:TypeArguments="system:Single" />
+				</TreeDataTemplate.DataType>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock Grid.Column="0" Text="{Binding Address}" />
+					<NumericUpDown Grid.Column="1"
+								   Increment="0.1"
+								   Value="{Binding Value}"
+								   Maximum="1"
+								   Minimum="-1"/>
+				</Grid>
+			</TreeDataTemplate>
+			<TreeDataTemplate x:Key="Int">
+				<TreeDataTemplate.DataType>
+					<x:Type TypeName="datatypes:ParsedAvatarConfigParameter" x:TypeArguments="system:Int32" />
+				</TreeDataTemplate.DataType>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock Grid.Column="0" Text="{Binding Address}" />
+					<NumericUpDown Grid.Column="1"
+								   Value="{Binding Value}"
+								   Increment="1"
+								   Minimum="0"
+								   Maximum="255" />
+				</Grid>
+			</TreeDataTemplate>
+			<TreeDataTemplate x:Key="Bool">
+				<TreeDataTemplate.DataType>
+					<x:Type TypeName="datatypes:ParsedAvatarConfigParameter" x:TypeArguments="system:Boolean" />
+				</TreeDataTemplate.DataType>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock Grid.Column="0" Text="{Binding Address}" />
+					<CheckBox Grid.Column="1" IsChecked="{Binding Value}" />
+				</Grid>
+			</TreeDataTemplate>
+		</selectors:AvatarParameterTypeSelector>
+	</Window.Resources>
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Grid Margin="20,10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Grid.Column="0"
+				   Text="{Binding AvatarName}"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Center" />
+		<TreeView Grid.Column="1"
+				  ItemsSource="{Binding AvatarParameters}"
+				  ItemTemplate="{DynamicResource ParameterTemplate}"
+				  VerticalAlignment="Stretch">
+			<TreeView.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel />
+				</ItemsPanelTemplate>
+			</TreeView.ItemsPanel>
+		</TreeView>
+	</Grid>
+</Window>
